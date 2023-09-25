@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "sqlxfluff"
+version = "0.1.0"
+description = ""
+authors = ["Coby Simmons <cobysimmons01@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+jsbeautifier = "^1.14.9"
+
+[tool.pylint.'MESSAGES CONTROL']
+disable = missing-module-docstring
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
