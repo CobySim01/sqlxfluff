@@ -1,0 +1,6 @@
+- id: sqlxfluff
+  name: SQLXFluff
+  description: This hook lints and formats SQLX files.
+  entry: sqlxfluff
+  language: python
+  files: "\\.sqlx$"

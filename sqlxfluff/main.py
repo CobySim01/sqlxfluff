@@ -6,14 +6,14 @@ import sqlfluff
 
 from termcolor import cprint
 
-from formatters.sqlx import format_parsed_file
-from config_utils import find_config_file
-from linting import parse_sql, print_lint_result
-from parsing import parse_sqlx
-from constants import EXIT_FAIL
+from .formatters.sqlx import format_parsed_file
+from .config_utils import find_config_file
+from .linting import parse_sql, print_lint_result
+from .parsing import parse_sqlx
+from .constants import EXIT_FAIL
 
 
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser(
         description="A script that formats and lints Dataform SQLX files."
     )
@@ -59,3 +59,7 @@ if __name__ == "__main__":
         )
         with open(filename, "w", encoding="utf-8") as f:
             f.write(formatted_file_contents)
+
+
+if __name__ == "__main__":
+    main()

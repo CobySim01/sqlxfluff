@@ -4,8 +4,8 @@ from .base import format_template, format_config
 from termcolor import cprint
 from sys import exit
 
-from constants import EXIT_FAIL
-from parsing import parse_sqlx
+from ..constants import EXIT_FAIL
+from ..parsing import parse_sqlx
 
 
 def format_sqlx(deconstructed_file: dict, dialect, config):
