@@ -23,35 +23,49 @@ def extract_block(file_contents, block_name):
 
 def extract_templates(text):
     """Extract's JavaScript templates from string."""
-    extracted = []
-    stack = []
-    temp_str = ""
-    in_template = False
+    # states
+    OUTSIDE = 0
+    INSIDE_DOLLAR = 1  # after we've seen a '$' character
+    INSIDE_EXPR = 2
 
-    for char in text:
-        # Starting a template
-        if char == "$" and not in_template:
-            temp_str += char
+    state = OUTSIDE
+    brace_count = 0
+    expressions = []
+    curr_expr = ""
 
-        # Entering the template
-        elif char == "{" and temp_str == "$":
-            temp_str += char
-            in_template = True
-            stack.append("{")
+    for i, char in enumerate(text):
+        if state == OUTSIDE:
+            if char == "$":
+                state = INSIDE_DOLLAR
+                curr_expr += char
+            continue
 
-        # Inside the template
-        elif in_template:
-            temp_str += char
+        if state == INSIDE_DOLLAR:
             if char == "{":
-                stack.append("{")
-            elif char == "}":
-                stack.pop()
-                if not stack:
-                    extracted.append(temp_str)
-                    temp_str = ""
-                    in_template = False
+                brace_count += 1
+                state = INSIDE_EXPR
+                curr_expr += char
+            else:
+                state = OUTSIDE
+                curr_expr = ""
+            continue
 
-    return extracted
+        if state == INSIDE_EXPR:
+            curr_expr += char
+            if char == "{":
+                brace_count += 1
+            elif char == "}":
+                brace_count -= 1
+                if brace_count == 0:
+                    state = OUTSIDE
+                    expressions.append(curr_expr)
+                    curr_expr = ""
+
+    # In case of unmatched braces, clear the current expression
+    if brace_count != 0:
+        curr_expr = ""
+
+    return expressions
 
 
 def parse_sqlx(file_contents: str):
