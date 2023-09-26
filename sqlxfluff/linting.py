@@ -13,6 +13,7 @@ def parse_sql(sql_string: str, dialect):
 
 
 def print_lint_result(result):
+    """Prints a result from `sqlfluff.lint`."""
     line_no = result.get("line_no", "")
     line_pos = result.get("line_pos", "")
     code = result.get("code", "")

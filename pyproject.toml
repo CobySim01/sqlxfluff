@@ -7,12 +7,15 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
-jsbeautifier = "^1.14.9"
 sqlfluff = "^2.3.2"
 termcolor = "^2.3.0"
 
 [tool.pylint.'MESSAGES CONTROL']
-disable = "missing-module-docstring"
+disable = [
+    "import-error",
+    "invalid-name",
+    "missing-module-docstring",
+]
 
 [tool.poetry.scripts]
 sqlxfluff = 'sqlxfluff.main:main'
