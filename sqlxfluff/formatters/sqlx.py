@@ -1,10 +1,5 @@
-from sys import exit  # pylint: disable=redefined-builtin
-
 import sqlfluff
-from termcolor import cprint
 
-from ..constants import EXIT_FAIL
-from ..parsing import parse_sqlx
 from .base import format_config, format_template
 from .indent import replace_with_indentation
 

@@ -23,7 +23,7 @@ def replace_with_indentation(source, target, replacement):
     # Determine the start of the line where the target string was found
     line_start = source.rfind("\n", 0, match.start()) + 1
 
-    # Compute the indentation as the spaces from the start of the line until the first non-space character
+    # Compute number of spaces at start of the line
     indentation_level = 0
     for char in source[line_start : match.start()]:
         if char != " ":
