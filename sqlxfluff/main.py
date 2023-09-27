@@ -2,9 +2,9 @@ import argparse
 from sys import exit  # pylint: disable=redefined-builtin
 
 import sqlfluff
+from sqlfluff.core import FluffConfig
 from termcolor import cprint
 
-from .config_utils import find_config_file, load_config
 from .constants import EXIT_FAIL
 from .formatters.javascript import validate_prettier_installation
 from .formatters.sqlx import format_sqlx
@@ -21,7 +21,7 @@ def main():
         description="A script that formats and lints Dataform SQLX files."
     )
     parser.add_argument(
-        "-c", "--config", help="Path to the configuration file", default=None
+        "-c", "--config-path", help="Path to the configuration file", default=None
     )
     dialects = [d.name for d in sqlfluff.core.dialect_readout()]
     parser.add_argument(
@@ -33,26 +33,27 @@ def main():
     opts = parser.parse_args()
 
     for filename in opts.files:
-        if opts.config is None:
-            opts.config = find_config_file(filename)
-        if opts.dialect is None:
-            opts.dialect = load_config(opts.config).get("sqlfluff", {}).get("dialect")
+        config = FluffConfig.from_path(
+            filename if opts.config_path is None else opts.config_path
+        )
+        config.set_value(
+            ["rules", "convention.terminator", "require_final_semicolon"], False
+        )
+        if opts.dialect is not None:
+            config.set_value(["dialect"], opts.dialect)
 
         with open(filename, "r", encoding="utf-8") as f:
             raw_file_contents = f.read()
         parsed_file_contents = parse_sqlx(raw_file_contents)
 
-        parsing_violations = parse_sql(parsed_file_contents["main"], opts.dialect)
+        cprint(filename, attrs=["bold"], end=" ")
+
+        parsing_violations = parse_sql(parsed_file_contents["main"], config)
         if parsing_violations is not None:
             cprint(parsing_violations, "red")
             exit(EXIT_FAIL)
 
-        lint_result = sqlfluff.lint(
-            parsed_file_contents["main"],
-            dialect=opts.dialect,
-            config_path=opts.config,
-        )
-        cprint(filename, attrs=["bold"], end=" ")
+        lint_result = sqlfluff.lint(parsed_file_contents["main"], config=config)
         if not lint_result:
             cprint("PASS", color="green")
         else:
@@ -60,11 +61,9 @@ def main():
             for result in lint_result:
                 print_lint_result(result)
 
-        formatted_file_contents = format_sqlx(
-            parsed_file_contents, opts.dialect, opts.config
-        )
+        formatted_file_contents = format_sqlx(parsed_file_contents, config)
         formatted_file_contents_again = format_sqlx(
-            parse_sqlx(formatted_file_contents), opts.dialect, opts.config
+            parse_sqlx(formatted_file_contents), config
         )
         if formatted_file_contents != formatted_file_contents_again:
             cprint("Formatter unable to determine final formatted form.", "red")

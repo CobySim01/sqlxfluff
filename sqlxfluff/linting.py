@@ -3,10 +3,10 @@ from sqlfluff.api import APIParsingError
 from termcolor import colored
 
 
-def parse_sql(sql_string: str, dialect):
+def parse_sql(sql_string: str, config):
     """Returns whether or not the provided SQL is parseable by SQLFluff."""
     try:
-        sqlfluff.parse(sql_string, dialect=dialect)
+        sqlfluff.parse(sql_string, config=config)
     except APIParsingError as error:
         return error.msg
     return None
