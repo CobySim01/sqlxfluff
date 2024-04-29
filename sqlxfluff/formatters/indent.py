@@ -11,6 +11,18 @@ def indent(string_or_lists: str | list[str], indent_level: int):
     return "\n".join(spaces + line if line.strip() else line for line in lst)
 
 
+def deindent(string_or_lists: str | list[str], indent_level: int):
+    """Indents each line of `string` by `indent_level` spaces."""
+    if isinstance(string_or_lists, str):
+        lst = string_or_lists.split("\n")
+    else:
+        lst = string_or_lists
+    spaces = " " * indent_level
+    return "\n".join(
+        line.removeprefix(spaces) if line.strip() else line for line in lst
+    )
+
+
 def replace_with_indentation(source, target, replacement):
     """Replace `target` in `source` with `replacement`, while maintaining the
     indentation level of `target`"""

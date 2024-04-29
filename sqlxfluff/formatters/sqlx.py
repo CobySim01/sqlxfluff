@@ -1,7 +1,7 @@
 import sqlfluff
 from sqlfluff.core import FluffConfig
 
-from .base import format_config, format_template
+from .base import format_config, format_js, format_template
 from .indent import replace_with_indentation
 
 
@@ -20,4 +20,7 @@ def format_sqlx(deconstructed_file: dict, config: FluffConfig):
 
     # recombine the config block and the fixed SQL
     formatted_config_block = format_config(deconstructed_file["config"])
-    return formatted_config_block + "\n\n" + bq_fix_result + "\n"
+    formatted_js_block = format_js(deconstructed_file["js"])
+    return (
+        "\n\n".join([formatted_config_block, formatted_js_block, bq_fix_result]) + "\n"
+    )

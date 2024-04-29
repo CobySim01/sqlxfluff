@@ -1,6 +1,6 @@
 import re
 
-from .indent import indent
+from .indent import deindent, indent
 from .javascript import format_with_prettier
 
 
@@ -21,3 +21,14 @@ def format_config(string):
     return "config " + format_with_prettier(mock_javascript).removeprefix(
         MOCK_VARIABLE_NAME
     )
+
+
+def format_js(string):
+    """Formats a js block."""
+    mock_javascript = re.sub(
+        r"}\s*$", "", re.sub(r"^\s*js\s+{", "", string, count=1), count=1
+    )
+    formatted_javascript_with_indent = indent(
+        format_with_prettier(deindent(mock_javascript, 2)), 2
+    )
+    return "js {\n" + formatted_javascript_with_indent + "\n}"
