@@ -1,13 +1,13 @@
 [tool.poetry]
 name = "sqlxfluff"
-version = "0.3.0"
+version = "0.3.1"
 description = ""
 authors = ["Coby Simmons <cobysimmons01@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
-sqlfluff = "^2.3.2"
+sqlfluff = "^3.2.0"
 termcolor = "^2.3.0"
 
 [tool.pylint.'MESSAGES CONTROL']
